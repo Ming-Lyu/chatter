@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.utils.timezone import now
+from django.utils.translation import ugettext as _
 
 
 class AutoCreatedField(models.DateTimeField):

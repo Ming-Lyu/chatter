@@ -29,12 +29,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.forms',
 
     'chatter',
+    'chatter.test_utils.test_app',
+    'ckeditor',
     
-    'chatter.test_utils.test_app'
-    
-
     # if your app has other dependencies that need to be added to the site
     # they should be added here
 ]
@@ -50,6 +50,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'tests.urls'
+
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 TEMPLATES = [
     {
@@ -114,3 +116,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'chatter/static')
+
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
