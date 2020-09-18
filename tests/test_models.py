@@ -19,7 +19,6 @@ class TestChatter(TestCase):
         pass
 
     def test_something(self):
-        # self.assertEqual(1,2)
         pass
 
     def tearDown(self):
