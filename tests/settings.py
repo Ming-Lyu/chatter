@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.forms',
+    'rest_framework',
 
     'chatter',
     'chatter.test_utils.test_app',
