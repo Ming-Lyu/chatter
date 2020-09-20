@@ -7,7 +7,6 @@ from django.conf import settings
 from ckeditor.fields import RichTextField
 from django_fsm import FSMField, transition
 
-
 class Dialog(TimeStampedModel):
     # TODO verbalization
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Dialog owner"),
@@ -18,3 +17,11 @@ class Dialog(TimeStampedModel):
     
     def __str__(self):
         return _(f"{self.owner}'s dialog")
+
+    @transition(field=workflow_state, source='draft', target='sended')
+    def send(self):
+        pass
+
+    @transition(field=workflow_state, source='sended', target='draft')
+    def withdrawl(self):
+        pass
