@@ -32,12 +32,17 @@ INSTALLED_APPS = [
 
     'chatter',
     
-    'chatter.test_utils.test_app'
+    'chatter.test_utils.test_app',
+    'channels',
     
 
     # if your app has other dependencies that need to be added to the site
     # they should be added here
 ]
+
+
+ASGI_APPLICATION = 'tests.routing.application'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
