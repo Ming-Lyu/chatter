@@ -4,6 +4,17 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+class InValidMessage(Exception):
+    pass
+
+# class Router(dict):
+#     '''Action router to communicate with frontend
+#     '''
+#     def __init__(self, action, method):
+#         pass
+
+
+
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
@@ -27,6 +38,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        print('**************')
+        print(text_data_json)
+
         message = text_data_json['message']
 
         # Send message to room group

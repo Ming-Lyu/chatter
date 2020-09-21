@@ -6,3 +6,4 @@ class DialogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dialog
         fields = '__all__'
+
