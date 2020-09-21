@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-from django.conf.urls import url
-from django.views.generic import TemplateView
-
+# chat/urls.py
+from django.urls import path
 from . import views
 
 app_name = 'chatter'
 urlpatterns = [
-    url(r'', TemplateView.as_view(template_name="base.html")),
-    ]
+    path('', views.index, name='index'),
+    path('<str:room_name>/', views.room, name='room'),
+]

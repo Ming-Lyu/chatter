@@ -36,9 +36,15 @@ INSTALLED_APPS = [
     'chatter.test_utils.test_app',
     'ckeditor',
     
+    'channels',
+    
     # if your app has other dependencies that need to be added to the site
     # they should be added here
 ]
+
+
+ASGI_APPLICATION = 'tests.routing.application'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -120,3 +126,14 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'chatter/static')
 
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
+
+# This requires that redis server is running on local/virtual machine
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('192.168.99.100', 6379)],
+        },
+    },
+}
