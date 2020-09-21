@@ -6,5 +6,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('chatter.urls', namespace='chatter')),
+    url(r'chat/', include('chatter.urls', namespace='chatter')),
 ]
