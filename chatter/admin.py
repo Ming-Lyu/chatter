@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import admin
-from chatter.models import Dialog
+from chatter.models import Dialog, Message
 
 @admin.register(Dialog)
-class AuthorAdmin(admin.ModelAdmin):
+class DialogAdmin(admin.ModelAdmin):
     pass
 
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    pass

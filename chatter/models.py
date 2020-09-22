@@ -20,8 +20,8 @@ class Dialog(TimeStampedModel):
 class Message(TimeStampedModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Dialog owner"),
                               on_delete=models.CASCADE)
-    title  = models.CharField(max_length=100)
-    body   = RichTextField()
+    # title  = models.CharField(max_length=100)
+    content   = RichTextField()
     workflow_state = FSMField(default='draft')
 
     # attached to one dialog
