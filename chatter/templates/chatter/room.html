@@ -155,7 +155,9 @@
             //     createMessage(data['message']);
             // }
             const data = JSON.parse(e.data);
-            createMessage(data.message)
+            console.log(data)
+
+            createMessage(data)
                 // document.querySelector('#chat-log').value += (data.message + '\n');
                 // console.log(data)
         };
@@ -196,11 +198,11 @@
 
         function createMessage(data) {
 
-            var author = data['author'];
+            var author = data.author;
             var msgListTag = document.createElement('li');
             var imgTag = document.createElement('img');
             var pTag = document.createElement('p');
-            pTag.textContent = data;
+            pTag.textContent = data.message;
             imgTag.src = 'http://emilcarlsson.se/assets/mikeross.png';
 
             if (author === username) {
