@@ -6,17 +6,9 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Message, Dialog
 from functools import partial
+from django.contrib.auth import get_user_model
 
-class InValidMessage(Exception):
-    pass
-
-# class Router(dict):
-#     '''Action router to communicate with frontend
-#     '''
-#     def __init__(self, action, method):
-#         pass
-
-
+User = get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
@@ -38,21 +30,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-    
+
     async def create_message(self, **kwargs):
         await database_sync_to_async(partial(Message.objects.create, **kwargs))()
 
+
     @database_sync_to_async
-    def create_dialog(self, **kwargs):
-        user = kwargs.pop('user')
-        dialog = Dialog.objects.create(**kwargs)
-        dialog.participants.add(user)
-        # dialog.participants.add(user)
-    
+    def get_or_create_dialog(self, **kwargs):
+        return Dialog.objects.get_or_create_dialog(**kwargs)
+
     @database_sync_to_async
-    def get_dialog(self, **kwargs):
-        return Dialog.objects.first()
-    
+    def get_user(self, *, username=None):
+        return User.objects.get(username=username)
+
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -66,12 +56,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # preparing the data
         user = self.scope['user']
         message = text_data_json['message']
-
+        opponent = await self.get_user(username='supplier1')
+        
         # TODO: check the action
         # await self.create_dialog(user=user)
-        dialog = await self.get_dialog()
+        dialog = await self.get_or_create_dialog(owner=user, opponent=opponent)
         await self.create_message(owner=user, content=message, dialog=dialog)
-
 
         # Send message to room group
         await self.channel_layer.group_send(
