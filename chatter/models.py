@@ -13,7 +13,7 @@ User = get_user_model()
 
 def get_official_user():
     # `get_or_create` just for testing purpose
-    user = User.objects.get_or_create(username='official_user') 
+    user, _ = User.objects.get_or_create(username='official_user') 
     return user
 
 

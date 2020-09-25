@@ -43,6 +43,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def get_user(self, *, username=None):
         return User.objects.get(username=username)
 
+
+    @database_sync_to_async
+    def fetch_history_messages(self, *, owner:User=None, opponent:User=None):
+        pass
+
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -56,11 +61,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # preparing the data
         user = self.scope['user']
         message = text_data_json['message']
-        opponent = await self.get_user(username='supplier1')
-        
+        # opponent = await self.get_user(username='supplier1')
+
         # TODO: check the action
         # await self.create_dialog(user=user)
-        dialog = await self.get_or_create_dialog(owner=user, opponent=opponent)
+        dialog = await self.get_or_create_dialog(owner=user)
         await self.create_message(owner=user, content=message, dialog=dialog)
 
         # Send message to room group
@@ -68,16 +73,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message
+                'message': message,
+                'author': user.username
             }
         )
 
     # Receive message from room group
     async def chat_message(self, event):
         message = event['message']
+        author = event['author']
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': message,
-            'author': self.scope['user'].username
+            'author': author
         }))
