@@ -14,7 +14,7 @@ def index(request):
 @login_required
 def room(request, room_name):
     #init
-    dialog_users = User.objects.filter(id__in=Dialog.objects.filter(participants__id=1).values_list('participants', flat=True))
+    dialog_users = User.objects.filter(id__in=Dialog.objects.filter(participants=request.user).values_list('participants', flat=True))
 
     return render(request, 'chatter/room.html', {
         'room_name_json': mark_safe(json.dumps(room_name)),
