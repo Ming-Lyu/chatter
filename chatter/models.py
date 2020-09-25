@@ -31,6 +31,10 @@ class DialogQuerySet(models.QuerySet):
             dialog.participants.add(owner, opponent)
         return dialog
 
+class MessageQuerySet(models.QuerySet):
+
+    def get_queryset(self):
+        return self.filter(is_removed=False)
 
 class Dialog(TimeStampedModel):
     # TODO verbalization
@@ -49,19 +53,35 @@ class Message(TimeStampedModel):
                               on_delete=models.CASCADE)
     # title  = models.CharField(max_length=100)
     content   = RichTextField()
-    workflow_state = FSMField(default='draft')
-
+    workflow_state = FSMField(default='sended')
+    
+    # support message deletion
+    is_removed = models.BooleanField(default=False, blank=True)
     # attached to one dialog
     dialog = models.ForeignKey(Dialog, on_delete=models.CASCADE)
 
+
     def __str__(self):
         return _(f"{self.owner}'s message")
+        
+    objects = models.Manager()
+    available_objects = MessageQuerySet.as_manager()
+    # @transition(field=workflow_state, source='deleted', target='sended')
+    # def send(self):
+    #     pass
 
-    
-    @transition(field=workflow_state, source='draft', target='sended')
-    def send(self):
-        pass
-
-    @transition(field=workflow_state, source='sended', target='draft')
+    @transition(field=workflow_state, source='sended', target='deleted')
     def withdrawl(self):
         pass
+
+
+    def delete(self, using=None, soft=True, *args, **kwargs):
+        """
+        Soft delete object (set its ``is_removed`` field to True).
+        Actually delete object if setting ``soft`` to False.
+        """
+        if soft:
+            self.is_removed = True
+            self.save(using=using)
+        else:
+            return super().delete(using=using, *args, **kwargs)
