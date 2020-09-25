@@ -13,3 +13,6 @@ class DialogAdmin(admin.ModelAdmin):
         MessageInline
     ]
 
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    pass

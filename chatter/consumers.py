@@ -48,7 +48,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def fetch_history_messages(self, *, owner:User=None, opponent:User=None):
         pass
 
-
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -74,16 +73,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message
+                'message': message,
+                'author': user.username
             }
         )
 
     # Receive message from room group
     async def chat_message(self, event):
         message = event['message']
+        author = event['author']
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': message,
-            'author': self.scope['user'].username
+            'author': author
         }))
