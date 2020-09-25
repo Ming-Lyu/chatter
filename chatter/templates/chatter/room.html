@@ -125,7 +125,7 @@
     <script src="{% static 'js/reconnectwebsockets.min.js' %}"></script>
     <script type="text/javascript">
         var roomName = JSON.parse('{{room_name_json|safe}}');
-        var username = JSON.parse('{{username|safe}}');
+        var username = '{{username|safe}}'
 
         var chatSocket = new ReconnectingWebSocket(
             'ws://' + window.location.host +
