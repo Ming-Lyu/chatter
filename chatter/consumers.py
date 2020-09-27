@@ -5,6 +5,7 @@ from channels.db import database_sync_to_async
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Message, Dialog
+from django.contrib.auth.models import User
 from functools import partial
 from django.contrib.auth import get_user_model
 
@@ -54,18 +55,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print('**************')
         print(text_data_json)
 
-        message = text_data_json['message']
         # TODO
         # initilise the dialog with somebody
 
         # preparing the data
         user = self.scope['user']
         message = text_data_json['message']
-        # opponent = await self.get_user(username='supplier1')
+        opponent_username = text_data_json['opponent_username']
+        
+        opponent = await self.get_user(username=opponent_username)
 
         # TODO: check the action
         # await self.create_dialog(user=user)
-        dialog = await self.get_or_create_dialog(owner=user)
+        dialog = await self.get_or_create_dialog(owner=user, opponent=opponent)
         await self.create_message(owner=user, content=message, dialog=dialog)
 
         # Send message to room group

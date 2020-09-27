@@ -8,6 +8,7 @@ from ckeditor.fields import RichTextField
 from django_fsm import FSMField, transition
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 
 User = get_user_model()
 
@@ -19,13 +20,19 @@ def get_official_user():
 
 class DialogQuerySet(models.QuerySet):
 
-    def get_or_create_dialog(self, owner:User, *, opponent:User = None, title:str='') -> 'Dialog':
+    def get_or_create_dialog(self, owner:User, *, opponent:User = None, title:str='', id:int=None) -> 'Dialog':
         '''If opponent is not defined, then we assumpt that is the official user
         '''
         if opponent is None:
             opponent = get_official_user()
         try:
-            dialog = self.filter(participants=owner).filter(participants=opponent).get()
+            if id:
+                dialog = self.get(pk=id)
+            else:
+                if owner!=opponent:
+                    dialog = self.filter(participants=owner).filter(participants=opponent).get()
+                else: # chat with self
+                    dialog = self.exclude(participants__in=User.objects.exclude(pk=owner.pk).values_list('id', flat=True)).filter(participants=owner).get()
         except ObjectDoesNotExist:
             dialog = self.create(title=title)
             dialog.participants.add(owner, opponent)
@@ -58,7 +65,7 @@ class Message(TimeStampedModel):
     # support message deletion
     is_removed = models.BooleanField(default=False, blank=True)
     # attached to one dialog
-    dialog = models.ForeignKey(Dialog, on_delete=models.CASCADE)
+    dialog = models.ForeignKey(Dialog, on_delete=models.CASCADE, related_name='messages')
 
 
     def __str__(self):

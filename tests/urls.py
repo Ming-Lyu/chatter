@@ -10,5 +10,5 @@ urlpatterns = [
     # chat urls
     re_path(r'^admin/', admin.site.urls),
     re_path(r'', include('chatter.urls', namespace='chatter')),
-    re_path(r'chatter_api/', include(router.urls)),
+    re_path(r'chatter_api/', include('chatter.api.urls', namespace='chatter_api')),
 ]

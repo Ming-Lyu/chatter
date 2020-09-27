@@ -65,16 +65,18 @@
             <div id="contacts">
                 <ul>
                     {% for dialog_user in dialog_users %}
-                    <li class="contact">
-                        <div class="wrap">
-                            <span class="contact-status online"></span>
-                            <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
-                            <div class="meta">
-                                <p class="name">{{dialog_user.username}}</p>
-                                <p class="preview">You just got LITT up, Mike.</p>
+                    <a href="{% url 'chatter:room' %}?opponent={{dialog_user.username}}">
+                        <li class="contact {% if dialog_user.username == opponent_username %}active{% endif %}">
+                            <div class="wrap">
+                                <span class="contact-status online"></span>
+                                <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
+                                <div class="meta">
+                                    <p class="name">{{dialog_user.username}}</p>
+                                    <p class="preview">You just got LITT up, Mike.</p>
+                                </div>
                             </div>
-                        </div>
-                    </li>
+                        </li>
+                    </a>
                     {% endfor %}
                 </ul>
             </div>
@@ -86,7 +88,7 @@
         <div class="content">
             <div class="contact-profile">
                 <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-                <p>{{ username }}</p>
+                <p>{{ opponent_username }}</p>
                 <div class="social-media">
                     <i class="fa fa-facebook" aria-hidden="true"></i>
                     <i class="fa fa-twitter" aria-hidden="true"></i>
@@ -94,6 +96,7 @@
                 </div>
             </div>
             <div class="messages">
+                <button data-page="1" id="loadmore" class="btn d-flex mx-auto">load more</button>
                 <ul id="chat-log">
                     <!-- {% comment %} -->
                     <li class="sent">
@@ -120,16 +123,20 @@
             </div>
         </div>
     </div>
-
+    <script>
+        var ROOM_URL = '{% url "chatter:room" %}'
+        var CSRF_TOKEN = '{{ csrf_token }}'
+    </script>
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/reconnectwebsockets.min.js' %}"></script>
     <script type="text/javascript">
-        var roomName = JSON.parse('{{room_name_json|safe}}');
-        var username = '{{username|safe}}'
+        var roomPk = JSON.parse('{{room_pk_json|safe}}');
+        var username = JSON.parse('{{username|safe}}');
+        var opponent_username = '{{ opponent_username }}'
 
         var chatSocket = new ReconnectingWebSocket(
             'ws://' + window.location.host +
-            '/ws/chat/' + roomName + '/');
+            '/ws/chat/' + roomPk + '/');
 
         chatSocket.onopen = function(e) {
             // fetchMessages(); 
@@ -167,6 +174,7 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             var messageInputDom = document.getElementById('chat-message-input');
             var message = messageInputDom.value;
+            if (!message) return
 
             // self-defined protocol to communicate with the server
             // the object being serialized must have `action` to be consumed by the server, otherwise
@@ -176,6 +184,7 @@
             chatSocket.send(JSON.stringify({
                 'action': 'create_message',
                 'message': message,
+                'opponent_username': opponent_username,
                 // 'from': username
             }));
 
@@ -188,7 +197,7 @@
         //     }));
         // }
 
-        function createMessage(data) {
+        function createMessage(data, insertMethod = 'append') {
 
             var author = data.author;
             var msgListTag = document.createElement('li');
@@ -206,8 +215,35 @@
             msgListTag.appendChild(imgTag);
             msgListTag.appendChild(pTag);
             // console.log(msgListTag)
-            document.querySelector('#chat-log').appendChild(msgListTag);
+            if (insertMethod == 'append'){
+                document.querySelector('#chat-log').appendChild(msgListTag);
+            }else if (insertMethod == 'prepend'){
+                document.querySelector('#chat-log').prepend(msgListTag);
+            }
+            // scroll message section
+            // $(".messages").animate({ scrollTop: $(document).height() }, "fast");
         }
+
+        // init messages
+        function init_message() {
+            var page = Number($('#loadmore').data('page'))
+            $.getJSON("{% url 'chatter_api:message' %}",{dialog_id:roomPk, page:page},
+                function (data, textStatus, jqXHR) {
+                    var results = data.results;
+                    $('#loadmore').data('page', page+1)
+                    console.log(results);
+                    $.each(results, function (i, element) { 
+                        createMessage(element, 'prepend')
+                    });
+
+                    if (data.next == null) $('#loadmore').removeClass('d-flex').addClass('d-none').prop('disable', false)
+                }
+            );
+        }
+        init_message()
+        $('#loadmore').on('click', function(){
+            init_message()
+        })
     </script>
 </body>
 
