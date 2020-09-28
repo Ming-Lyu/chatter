@@ -127,14 +127,14 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'chatter/static')
 
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
-
+import platform
 
 # This requires that redis server is running on local/virtual machine
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [('192.168.99.100', 6379) if platform.system()=='Windows' else ('127.0.0.1', 6379)],
         },
     },
 }

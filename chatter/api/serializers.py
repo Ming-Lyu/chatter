@@ -8,6 +8,8 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ('message', 'author', 'id')
+
+
 class DialogSerializer(serializers.ModelSerializer):
 
     class Meta:
