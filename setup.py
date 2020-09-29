@@ -33,7 +33,7 @@ if sys.argv[-1] == 'publish':
         sys.exit()
     os.system('python setup.py sdist upload')
     os.system('python setup.py bdist_wheel upload')
-    sys.exit()
+    sys.exit()  
 
 if sys.argv[-1] == 'tag':
     print("Tagging the version on git:")
@@ -46,7 +46,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 requirements = open('requirements.txt').readlines()
 
 setup(
-    name='chatter',
+    name='django-chats',
     version=version,
     description="""Async Chatter App Based on Webscokets""",
     long_description=readme + '\n\n' + history,

@@ -1,5 +1,5 @@
 =============================
-chatter
+django-chats
 =============================
 
 .. image:: https://badge.fury.io/py/chatter.svg
@@ -16,14 +16,14 @@ Async Chatter App Based on Webscokets
 Documentation
 -------------
 
-The full documentation is at https://chatter.readthedocs.io.
+The full documentation is at https://django-chats.readthedocs.io.
 
 Quickstart
 ----------
 
 Install chatter::
 
-    pip install chatter
+    pip install django-chats
 
 Add it to your `INSTALLED_APPS`:
 
@@ -38,13 +38,13 @@ Add it to your `INSTALLED_APPS`:
 Add chatter's URL patterns:
 
 .. code-block:: python
-
+    from django.urls import re_path, include
     from chatter import urls as chatter_urls
 
 
     urlpatterns = [
         ...
-        url(r'^', include(chatter_urls)),
+        re_path(r'^', include(chatter_urls)),
         ...
     ]
 
