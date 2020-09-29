@@ -138,3 +138,5 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+OFFICIAL_USER = 'official_user'
