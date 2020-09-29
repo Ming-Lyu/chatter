@@ -53,6 +53,7 @@ Add chatter's URL patterns:
 
 
 Redis is required for group chatting
+
 .. code-block:: python
 
     # settings
@@ -69,8 +70,7 @@ Redis is required for group chatting
     }
 
 
-Official acount username could be specified or by default: "official_account"
-
+Official acount username could be specified or by default: "official_user"
 
 Features
 --------
