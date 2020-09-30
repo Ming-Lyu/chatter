@@ -9,14 +9,15 @@ from django_fsm import FSMField, transition
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+from django.db.models import OuterRef, Subquery
+from django.conf import settings
 
 User = get_user_model()
 
 def get_official_user():
     # `get_or_create` just for testing purpose
-    user, _ = User.objects.get_or_create(username='official_user') 
+    user, _ = User.objects.get_or_create(username=settings.OFFICIAL_USER) 
     return user
-
 
 class DialogQuerySet(models.QuerySet):
 
@@ -37,6 +38,13 @@ class DialogQuerySet(models.QuerySet):
             dialog = self.create(title=title)
             dialog.participants.add(owner, opponent)
         return dialog
+
+    def latest_message_list(self):
+        '''A list of dialogs with newest message attached
+        '''
+        latest_messages = Message.objects.filter(dialog=OuterRef('pk')).order_by('-created')
+        return self.annotate(last_message=Subquery(latest_messages.values('content')[:1]))
+    
 
 class MessageQuerySet(models.QuerySet):
 
