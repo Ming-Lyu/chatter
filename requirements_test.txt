@@ -1,3 +1,12 @@
+django==3.1
+django-fsm
+djangorestframework
+django-ckeditor
+django-environ
+channels-redis
+channels
+daphne
+
 coverage==4.4.1
 mock>=1.0.1
 flake8>=2.1.0

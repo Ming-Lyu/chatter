@@ -11,6 +11,9 @@ from chatter.models import Dialog
 def index(request):
     return render(request, 'chatter/index.html', {})
 
+
+from .forms import MessageForm
+
 @login_required
 def room(request, room_pk=None):
     opponent = request.GET.get('opponent', None)
@@ -25,8 +28,10 @@ def room(request, room_pk=None):
     
     # TODO this work only 1 on 1
     opponent_username = opponent if opponent else dialog.participants.exclude(pk = request.user.pk).get().username
+    message_form = MessageForm()
 
     return render(request, 'chatter/room.html', {
+        'form': message_form,
         'room_pk_json': mark_safe(json.dumps(dialog.pk)),
         'username': mark_safe(json.dumps(request.user.username)),
         'dialog_users': dialog_users,
