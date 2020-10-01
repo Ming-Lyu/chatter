@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 import json
 
 from chatter.models import Dialog
+from chatter.utils.models_functions import Concat
 
 def index(request):
     return render(request, 'chatter/index.html', {})
@@ -23,9 +24,15 @@ def room(request, room_pk=None):
     dialog = Dialog.objects.get_or_create_dialog(request.user, opponent=opponent, id=room_pk)
 
     #init
-    id_list = [user.pk for dialog in Dialog.objects.filter(participants=request.user).iterator() for user in dialog.participants.all()]
-    dialog_users = User.objects.filter(id__in=id_list)
-    
+    dialog_users = Dialog.objects.annotate(users = Concat('participants__username')).filter(participants=request.user).latest_message_list().values('users', 'last_message')
+    for dialog_user in dialog_users:
+        if not dialog_user['last_message']:
+            dialog_user['last_message'] = ''
+        if len(dialog_user['users'].split(',')) != 1:
+            users_list = dialog_user['users'].split(',')
+            users_list.remove(request.user.username)
+            dialog_user['users'] = users_list[0]
+
     # TODO this work only 1 on 1
     opponent_username = opponent if opponent else dialog.participants.exclude(pk = request.user.pk).get().username
     message_form = MessageForm()

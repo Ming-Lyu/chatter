@@ -73,14 +73,15 @@
             <div id="contacts">
                 <ul>
                     {% for dialog_user in dialog_users %}
-                    <a href="{% url 'chatter:room' %}?opponent={{dialog_user.username}}">
+
+                    <a href="{% url 'chatter:room' %}?opponent={{dialog_user.users}}">
                         <li class="contact {% if dialog_user.username == opponent_username %}active{% endif %}">
                             <div class="wrap">
                                 <span class="contact-status online"></span>
                                 <img src="http://emilcarlsson.se/assets/louislitt.png" alt="" />
                                 <div class="meta">
-                                    <p class="name">{{dialog_user.username}}</p>
-                                    <p class="preview">You just got LITT up, Mike.</p>
+                                    <p class="name">{{dialog_user.users}}</p>
+                                    <p class="preview">{{dialog_user.last_message}}</p>
                                 </div>
                             </div>
                         </li>
@@ -208,6 +209,8 @@
             }));
 
             messageInputDom.value = '';
+            $('.emoji-wysiwyg-editor').text('')
+            $('.emoji-wysiwyg-editor').focus()
             console.log(messageInputDom.value);
         };
 
