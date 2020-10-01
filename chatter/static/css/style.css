@@ -1,3 +1,14 @@
+.message-input{
+    width: 100%;
+}
+.emoji-wysiwyg-editor{
+    width: 100%;
+}
+#loadmore{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+}
 a .contact {
     color: white!important;
     text-decoration: none!important;
@@ -647,8 +658,8 @@ body {
 
 #frame .content .messages {
     height: auto;
-    min-height: calc(100% - 93px);
-    max-height: calc(100% - 93px);
+    min-height: calc(100% - 130px);
+    max-height: calc(100% - 200px);
     overflow-y: scroll;
     overflow-x: hidden;
     width: 100%;
@@ -731,6 +742,8 @@ body {
 
 #frame .content .message-input .wrap {
     position: relative;
+    display: inline-flex;
+    width: 100%;
 }
 
 #frame .content .message-input .wrap input {
