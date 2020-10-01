@@ -21,6 +21,9 @@ import sys, os
 cwd = os.getcwd()
 parent = os.path.dirname(cwd)
 sys.path.append(parent)
+import django
+os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+django.setup()
 
 import chatter
 
@@ -46,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'chatter'
+project = u'django-chats'
 copyright = u'2020, MingLyu'
 
 # The version info for the project you're documenting, acts as replacement for
