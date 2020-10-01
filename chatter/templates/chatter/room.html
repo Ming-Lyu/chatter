@@ -12,20 +12,26 @@
             });
         } catch (e) {}
     </script>
+
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
     <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
+    <!-- <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script> -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script> -->
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!-- <script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href='{% static "css/emoji.css" %}'>
+
 </head>
 
 <body>
+
     <div id="frame">
+        <!-- <input type="text" placeholder='wtfsssssssssssssssss' data-emojiable="true" data-emoji-input="unicode" /> -->
         <div id="sidepanel">
             <div id="profile">
                 <div class="wrap">
@@ -85,6 +91,7 @@
                 <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
             </div>
         </div>
+
         <div class="content">
             <div class="contact-profile">
                 <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
@@ -112,10 +119,16 @@
 
                 </ul>
             </div>
+
             <div class="message-input">
                 <div class="wrap">
-                    <input id="chat-message-input" type="text" placeholder="Write your message..." />
-                    <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                    <input id="chat-message-input" type="text" placeholder="Write your message..." data-emojiable="true" data-emoji-input="unicode" />
+                    <div class="image-upload">
+                        <label for="file-input">
+                            <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                        </label>
+                        <input id="file-input" type="file" />
+                    </div>
                     <button id="chat-message-submit" class="submit">
           <i class="fa fa-paper-plane" aria-hidden="true"></i>
         </button>
@@ -215,9 +228,9 @@
             msgListTag.appendChild(imgTag);
             msgListTag.appendChild(pTag);
             // console.log(msgListTag)
-            if (insertMethod == 'append'){
+            if (insertMethod == 'append') {
                 document.querySelector('#chat-log').appendChild(msgListTag);
-            }else if (insertMethod == 'prepend'){
+            } else if (insertMethod == 'prepend') {
                 document.querySelector('#chat-log').prepend(msgListTag);
             }
             // scroll message section
@@ -227,12 +240,15 @@
         // init messages
         function init_message() {
             var page = Number($('#loadmore').data('page'))
-            $.getJSON("{% url 'chatter_api:message' %}",{dialog_id:roomPk, page:page},
-                function (data, textStatus, jqXHR) {
+            $.getJSON("{% url 'chatter_api:message' %}", {
+                    dialog_id: roomPk,
+                    page: page
+                },
+                function(data, textStatus, jqXHR) {
                     var results = data.results;
-                    $('#loadmore').data('page', page+1)
+                    $('#loadmore').data('page', page + 1)
                     console.log(results);
-                    $.each(results, function (i, element) { 
+                    $.each(results, function(i, element) {
                         createMessage(element, 'prepend')
                     });
 
@@ -241,10 +257,29 @@
             );
         }
         init_message()
-        $('#loadmore').on('click', function(){
+        $('#loadmore').on('click', function() {
             init_message()
         })
     </script>
+
+    <script src="{% static 'js/config.js' %}"></script>
+    <script src="{% static 'js/util.js' %} "></script>
+    <script src="{% static 'js/jquery.emojiarea.js' %}"></script>
+    <script src="{% static 'js/emoji-picker.js' %}"></script>
+
+    <script>
+        // Initializes and creates emoji set from sprite sheet
+        window.emojiPicker = new EmojiPicker({
+            emojiable_selector: '[data-emojiable=true]',
+            assetsPath: '../static/img',
+            popupButtonClasses: 'fa fa-smile-o'
+        });
+        // Finds all elements with emojiable_selector and converts them to rich emoji input fields
+        // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+        // It can be called as many times as necessary; previously converted input fields will not be converted again
+        window.emojiPicker.discover();
+    </script>
+
 </body>
 
 </html>

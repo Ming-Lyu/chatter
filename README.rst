@@ -39,6 +39,7 @@ Add it to your `INSTALLED_APPS`:
 Add chatter's URL patterns:
 
 .. code-block:: python
+
     from django.urls import re_path, include
     from chatter import urls as chatter_urls
     from chatter.api import urls as chatter_api_urls
@@ -52,13 +53,12 @@ Add chatter's URL patterns:
     ]
 
 
-Redis is required for group chatting
+Redis need to be configured for group chatting:
 
 .. code-block:: python
 
-    # settings
     import platform
-
+    
     # Configure the redis server
     CHANNEL_LAYERS = {
         'default': {
@@ -70,7 +70,9 @@ Redis is required for group chatting
     }
 
 
+
 Official acount username could be specified or by default: "official_user"
+
 
 Features
 --------
@@ -78,6 +80,7 @@ Features
 * Support Realtime communication through ASGI compatible Server
 * Automatically generated official account if not specified
 * Message implemented using django-restframework
+* EmojiPicker Intergration(credit:OneSignal)
 
 
 Running Tests

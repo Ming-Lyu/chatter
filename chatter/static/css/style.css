@@ -1,7 +1,8 @@
-a .contact{
+a .contact {
     color: white!important;
     text-decoration: none!important;
 }
+
 body {
     display: flex;
     align-items: center;
@@ -682,13 +683,11 @@ body {
 }
 
 #frame .content .messages ul li.sent img {
-    
     float: right;
     margin: 6px 0 0 8px;
 }
 
 #frame .content .messages ul li.sent p {
-    
     background: #f5f5f5;
     float: right;
 }
@@ -802,4 +801,8 @@ body {
 
 .fa {
     font-size: 1.5em !important;
+}
+
+.image-upload>input {
+    display: none;
 }
