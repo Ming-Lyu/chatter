@@ -1,14 +1,17 @@
-.message-input{
+.message-input {
+    width: 80%;
+}
+
+.emoji-wysiwyg-editor {
     width: 100%;
 }
-.emoji-wysiwyg-editor{
-    width: 100%;
-}
-#loadmore{
+
+#loadmore {
     display: flex;
     margin-left: auto;
     margin-right: auto;
 }
+
 a .contact {
     color: white!important;
     text-decoration: none!important;
