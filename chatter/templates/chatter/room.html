@@ -160,6 +160,10 @@
             console.log('connected')
         }
 
+        function containsFile(data) {
+            if (data.containsFile) return true
+        }
+
         chatSocket.onmessage = function(e) {
             // var data = JSON.parse(e.data);   
             // if (data['command'] === 'messages') {
@@ -173,7 +177,9 @@
             // console.log(data)
             // console.log(data.message)
 
+            // detect contains file
             if (data.message.startsWith('data:image')) {
+                console.log(data);
                 createMessage(data, insertMethod = 'append', image = true, src = data.message)
             } else {
                 createMessage(data)
@@ -227,8 +233,6 @@
 
         function createMessage(data, insertMethod = 'append', image = false, src = '') {
             console.log(data);
-            console.log(image);
-
 
             var author = data.author;
             var msgListTag = document.createElement('li');
@@ -264,8 +268,6 @@
             // scroll message section
             // $(".messages").animate({ scrollTop: $(document).height() }, "fast");
         }
-
-
 
 
         // init messages
