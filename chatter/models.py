@@ -64,6 +64,8 @@ class Dialog(TimeStampedModel):
 
 from django.core.validators import FileExtensionValidator
 
+
+
 class Message(TimeStampedModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Dialog owner"),
                               on_delete=models.CASCADE)
@@ -75,8 +77,8 @@ class Message(TimeStampedModel):
     is_removed = models.BooleanField(default=False, blank=True)
     # attached to one dialog
     dialog = models.ForeignKey(Dialog, on_delete=models.CASCADE, related_name='messages')
-    # file =  models.FileField(upload_to='files/', validators=[FileExtensionValidator(
-    #     allowed_extensions=['pdf', 'png', 'jpg', 'jpeg'])])
+    file =  models.FileField(upload_to='files/', validators=[FileExtensionValidator(
+        allowed_extensions=['pdf', 'png', 'jpg', 'jpeg'])], null=True)
 
     def __str__(self):
         return _(f"{self.owner}'s message")

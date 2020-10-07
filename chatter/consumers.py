@@ -19,14 +19,13 @@ import re
 
 B64_PAT_RE = 'NOT_SUPPORT'
 
-
 def base64_decode(data, name=None):
     format, imgstr = data.split(';base64,') 
     ext = format.split('/')[-1]
     if not name:
         name = hashlib.md5(data.encode()).hexdigest()
-    data = ContentFile(base64.b64decode(imgstr), name=name + ext)
-
+    data = ContentFile(base64.b64decode(imgstr), name=name + '.' + ext)
+    return data
 
 class ChatConsumer(AsyncWebsocketConsumer):
     '''Async chat consumer
@@ -71,27 +70,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         print('**************')
         print(text_data_json)
-
-        # preparing the data
         user = self.scope['user']
-
-        message = text_data_json['message']
-        if self._has_base64_str(message):
-            self._has_file = True
-        else:
-            self._has_file = False
-    
-        # detect the message file
         opponent_username = text_data_json['opponent_username']
-        
-        # get username
         opponent = await self.get_user(username=opponent_username)
 
         # TODO: check the action
         # await self.create_dialog(user=user)
         dialog = await self.get_or_create_dialog(owner=user, opponent=opponent)
-        await self.create_message(owner=user, content=message, dialog=dialog)
         
+        message = text_data_json['message']
+
+        if self._has_base64_str(message):
+            self._has_file = True
+            # saving to db.
+            img_file = base64_decode(message)
+            await self.create_message(owner=user, content='', dialog=dialog, file=img_file)
+        else:
+            self._has_file = False
+            await self.create_message(owner=user, content=message, dialog=dialog)
+
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
