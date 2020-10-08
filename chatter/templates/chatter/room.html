@@ -303,31 +303,84 @@
     </script>
 
     <script>
+        var max_height = 600;
+        var max_width = 800;
+
+        function resizeMe(img) {
+            var canvas = document.createElement('canvas');
+            var width = img.width;
+            var height = img.height;
+            // calculate the width and height, constraining the proportions
+            if (width > height) {
+                if (width > max_width) {
+                    //height *= max_width / width;
+                    height = Math.round(height *= max_width / width);
+                    width = max_width;
+                }
+            } else {
+                if (height > max_height) {
+                    //width *= max_height / height;
+                    width = Math.round(width *= max_height / height);
+                    height = max_height;
+                }
+            }
+
+            // resize the canvas and draw the image data into it
+            canvas.width = width;
+            canvas.height = height;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // preview.appendChild(canvas); // do the actual resized preview
+
+            return canvas.toDataURL("image/jpeg", 0.7); // get the data from canvas as 70% JPG (can be also PNG, etc.)
+
+        }
+
         function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
 
+                // compress the image
                 reader.onload = function(e) {
-                        // send data to server
-                        var fileBase64 = reader.result;
-                        // console.log(fileBase64);
-                        chatSocket.send(JSON.stringify({
-                            'action': 'create_message',
-                            'message': fileBase64,
-                            'opponent_username': opponent_username,
-                            // 'from': username
-                        }));
+                        // get blob url
+                        let buffer = e.target.result
+                            // alert('haha')
+                        var blob = new Blob([event.target.result]);
+                        // console.log(typeof buffer)
+
+                        var blobURL = window.URL.createObjectURL(blob);
+                        // new image
+                        var image = new Image();
+                        image.src = blobURL;
+                        var fileBase64;
+
+                        // image onload
+                        image.onload = function() {
+                            // have to wait till it's loaded
+                            var resized = resizeMe(image); // send it to canvas
+                            fileBase64 = resized;
+                            // console.log(fileBase64);
+                            chatSocket.send(JSON.stringify({
+                                'action': 'create_message',
+                                'message': fileBase64,
+                                'opponent_username': opponent_username,
+                                // 'from': username
+                            }));
+                        }
                     }
                     // encode b64
-                reader.readAsDataURL(input.files[0]);
-
+                    // reader.readAsDataURL(input.files[0]);
+                buffer = reader.readAsArrayBuffer(input.files[0]);
             }
         }
+
         const fileSelector = document.getElementById('file-input');
         fileSelector.addEventListener('change', (event) => {
             readURL(fileSelector);
         });
     </script>
+
 
     <script src="{% static 'js/config.js' %}"></script>
     <script src="{% static 'js/util.js' %} "></script>
