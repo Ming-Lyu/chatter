@@ -231,7 +231,10 @@
         //     }));
         // }
 
-        function createMessage(data, insertMethod = 'append', image = false, src = '') {
+        function createMessage(data, insertMethod = 'append', image = false, src = '', imageOption = {
+            height: 150,
+            width: 150
+        }) {
             console.log(data);
 
             var author = data.author;
@@ -246,8 +249,14 @@
                 //  TODO styling
                 var imageTag = document.createElement('img');
                 imageTag.src = src
+                imageTag.style.cssText = `border-radius:0px;height:${imageOption.height}px;width:${imageOption.width}px`
+
+                // imageTag.style.height = `${imageOption.height}px` | 200
+                // imageTag.style.width = `${imageOption.width}px` | 200
+                // imageTag.style.bordeRadius = '0px'
                 msgListTag.appendChild(imageTag);
-                // change height, width
+                console.log(imageTag)
+                    // change height, width
             } else {
                 var pTag = document.createElement('p');
                 pTag.textContent = data.message;
@@ -269,6 +278,9 @@
             // $(".messages").animate({ scrollTop: $(document).height() }, "fast");
         }
 
+        function _isB64encoded(value) {
+            return value.includes(';base64,') ? true : false
+        }
 
         // init messages
         function init_message(get_down = false) {
@@ -282,7 +294,12 @@
                     var results = data.results;
                     $('#loadmore').data('page', page + 1)
                     $.each(results, function(i, element) {
-                        createMessage(element, 'prepend')
+                        // check if element.message is b64 encoded, extremly ugly
+                        if (_isB64encoded(element.message)) {
+                            createMessage(element, 'prepend', image = true, src = element.message)
+                        } else {
+                            createMessage(element, 'prepend')
+                        }
                     });
                     console.log(data.next == null);
                     if (data.next == null) $('#loadmore').css({

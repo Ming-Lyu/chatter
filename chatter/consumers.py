@@ -84,7 +84,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self._has_file = True
             # saving to db.
             img_file = base64_decode(message)
-            await self.create_message(owner=user, content='', dialog=dialog, file=img_file)
+            # TODO: now the frontend is base64 file encoded using message.
+            await self.create_message(owner=user, content=message, dialog=dialog, file=img_file)
         else:
             self._has_file = False
             await self.create_message(owner=user, content=message, dialog=dialog)
