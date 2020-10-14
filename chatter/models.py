@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _
 from django.utils.timezone import localtime
 from django.db import models
 from django.conf import settings
-from ckeditor.fields import RichTextField
+# from ckeditor.fields import RichTextField
 from django_fsm import FSMField, transition
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
@@ -70,7 +70,7 @@ class Message(TimeStampedModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("Dialog owner"),
                               on_delete=models.CASCADE)
     # title  = models.CharField(max_length=100)
-    content   = RichTextField()
+    content   = models.TextField(blank=True, null=True)
     workflow_state = FSMField(default='sended')
     
     # support message deletion

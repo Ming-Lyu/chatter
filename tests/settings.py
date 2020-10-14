@@ -35,7 +35,7 @@ INSTALLED_APPS = [
 
     'chatter',
     'chatter.test_utils.test_app',
-    'ckeditor',
+    # 'ckeditor',
     
     'channels',
     
@@ -126,7 +126,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'chatter/static')
 
-CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+# CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 import platform
 
 # This requires that redis server is running on local/virtual machine

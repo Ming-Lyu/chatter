@@ -1,7 +1,7 @@
 django==3.1
 django-fsm
 djangorestframework
-django-ckeditor
+# django-ckeditor
 django-environ
 channels-redis
 channels
