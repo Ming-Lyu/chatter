@@ -1,4 +1,4 @@
-django==3.1
+django==3.0
 django-fsm
 djangorestframework
 # django-ckeditor

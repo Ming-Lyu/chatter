@@ -1,4 +1,12 @@
-from django.db.models import Aggregate, CharField, JSONField
+from django.db.models import Aggregate, CharField
+
+
+import django
+if django.VERSION >= (3, 1, 0):
+    from django.db.models import JSONField
+else:
+    from django.contrib.postgres.fields import JSONField
+
 
 class Concat(Aggregate):
     function = 'GROUP_CONCAT'
