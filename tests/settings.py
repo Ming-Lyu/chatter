@@ -42,9 +42,9 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'tests.routing.application'
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -136,3 +136,4 @@ CHANNEL_LAYERS = {
 }
 
 OFFICIAL_USER = 'official_user'
+CORS_ALLOW_ALL_ORIGINS=True
