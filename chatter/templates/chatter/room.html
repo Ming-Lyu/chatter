@@ -122,7 +122,7 @@
 
                 </ul>
             </div>
-        
+
             <div class="message-input">
                 <div class="wrap">
                     <input id="chat-message-input" type="text" placeholder="Write your message..." data-emojiable="true" data-emoji-input="unicode" />
@@ -174,8 +174,8 @@
             //     createMessage(data['message']);
             // }
             const data = JSON.parse(e.data);
-            // console.log(data)
-            // console.log(data.message)
+            console.log(data)
+                // console.log(data.message)
 
             // detect contains file
             if (data.message.startsWith('data:image')) {
@@ -197,12 +197,12 @@
         };
 
         document.querySelector('#chat-message-input').onkeyup = function(e) {
-         
+
             if (e.keyCode === 13) { // enter, return
                 document.querySelector('#chat-message-submit').click();
             }
         };
-       
+
         document.querySelector('#chat-message-submit').onclick = function(e) {
             var messageInputDom = document.getElementById('chat-message-input');
             var message = messageInputDom.value;
@@ -395,7 +395,6 @@
         fileSelector.addEventListener('change', (event) => {
             readURL(fileSelector);
         });
-
     </script>
 
 

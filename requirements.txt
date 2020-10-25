@@ -1,4 +1,4 @@
-django==3.0
+django==3.1
 django-fsm
 djangorestframework
 # django-ckeditor
@@ -6,4 +6,5 @@ django-environ
 channels-redis
 channels
 daphne
+django-cors-headers
 # Additional requirements go here

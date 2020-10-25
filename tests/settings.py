@@ -31,14 +31,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.forms',
     'rest_framework',
-
-
+    'corsheaders',
     'chatter',
     'chatter.test_utils.test_app',
-    # 'ckeditor',
-    
     'channels',
-    
     # if your app has other dependencies that need to be added to the site
     # they should be added here
 ]
