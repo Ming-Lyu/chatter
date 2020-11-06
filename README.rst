@@ -36,6 +36,7 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
+
 Add chatter's URL patterns:
 
 .. code-block:: python
@@ -64,7 +65,9 @@ Redis need to be configured for group chatting:
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
             'CONFIG': {
-                "hosts": [('192.168.99.100', 6379) if platform.system()=='Windows' else ('127.0.0.1', 6379)],
+                # "hosts": [('192.168.99.100', 6379) if platform.system()=='Windows' else ('127.0.0.1', 6379)],
+                # for docker
+                "hosts": [('redis', 6379)]
             },
         },
     }
@@ -81,6 +84,16 @@ Features
 * Automatically generated official account if not specified
 * Message implemented using django-restframework
 * EmojiPicker Intergration(credit:OneSignal)
+
+Run locally with Docker
+-----------------------
+
+.. code-block:: python
+
+   docker-compose build
+   docker-compose up
+
+
 
 
 Running Tests
