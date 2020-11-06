@@ -2,8 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User
-
-
 import json
 
 from chatter.models import Dialog
@@ -11,7 +9,6 @@ from chatter.utils.models_functions import Concat
 
 def index(request):
     return render(request, 'chatter/index.html', {})
-
 
 from .forms import MessageForm
 

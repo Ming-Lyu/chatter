@@ -1,4 +1,5 @@
 django==3.1
+psycopg2
 django-fsm
 djangorestframework
 # django-ckeditor
@@ -7,4 +8,4 @@ channels-redis
 channels
 daphne
 django-cors-headers
-# Additional requirements go here
+# Additional requirements go herels
