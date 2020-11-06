@@ -60,10 +60,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def get_user(self, *, username=None):
         return User.objects.get(username=username)
 
-
-    @database_sync_to_async
-    def fetch_history_messages(self, *, owner:User=None, opponent:User=None):
-        pass
     
     # Receive message from WebSocket
     async def receive(self, text_data):

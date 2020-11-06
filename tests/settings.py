@@ -143,7 +143,8 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('192.168.99.100', 6379) if platform.system()=='Windows' else ('127.0.0.1', 6379)],
+            # "hosts": [('192.168.99.100', 6379) if platform.system()=='Windows' else ('127.0.0.1', 6379)],
+            "hosts": [('redis', 6379),], # docker
         },
     },
 }

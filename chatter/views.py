@@ -6,6 +6,7 @@ import json
 
 from chatter.models import Dialog
 from chatter.utils.models_functions import Concat
+from django.contrib.postgres.aggregates import ArrayAgg,StringAgg
 
 def index(request):
     return render(request, 'chatter/index.html', {})
@@ -17,11 +18,9 @@ def room(request, room_pk=None):
     opponent = request.GET.get('opponent', None)
     if opponent:
         opponent = User.objects.get(username=opponent)
-
     dialog = Dialog.objects.get_or_create_dialog(request.user, opponent=opponent, id=room_pk)
-
     #init
-    dialog_users = Dialog.objects.annotate(users = Concat('participants__username')).filter(participants=request.user).latest_message_list().order_by('-last_message_date').values('users', 'last_message')
+    dialog_users = Dialog.objects.annotate(users = StringAgg('participants__username', delimiter=',')).filter(participants=request.user).latest_message_list().order_by('-last_message_date').values('users', 'last_message')
     for dialog_user in dialog_users:
         if not dialog_user['last_message']:
             dialog_user['last_message'] = ''
