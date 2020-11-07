@@ -1,22 +1,27 @@
-# import json
+# django
 from asgiref.sync import async_to_sync, sync_to_async
 from channels.db import database_sync_to_async
 # from channels.generic.websocket import WebsocketConsumer
-import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.core.serializers.json import DjangoJSONEncoder
 from .models import Message, Dialog
 from django.contrib.auth.models import User
-from functools import partial
-from django.contrib.auth import get_user_model
-User = get_user_model()
-
-import base64
-
 from django.core.files.base import ContentFile
+from django.contrib.auth import get_user_model
+
+# std
+from functools import partial
 import hashlib
 import io
 import re
+import base64
+import asyncio
+import logging
+import json
+from .cache import ChatCache
 
+
+User = get_user_model()
 B64_PAT_RE = 'NOT_SUPPORT'
 
 def base64_decode(data, name=None):
@@ -27,9 +32,18 @@ def base64_decode(data, name=None):
     data = ContentFile(base64.b64decode(imgstr), name=name + '.' + ext)
     return data
 
+
 class ChatConsumer(AsyncWebsocketConsumer):
     '''Async chat consumer
     '''
+    cache_interval = 10
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._task = None
+        self._cache = ChatCache() # initialize pool
+        self._event = asyncio.Event()
+
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
@@ -41,6 +55,40 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
         await self.accept()
+
+        # Record user status to db
+        # await self.record_to_db()
+        # await self.record_to_cache()
+        
+        # # works like a daemon thread 
+        # # create task instead await
+        # self._task = asyncio.create_task(self._run(current_role='manager'))
+        # self._task2 = asyncio.create_task(self.monitoring())
+
+    async def monitoring(self):
+        '''Real time monitoring
+        '''
+        await self._event.wait()
+        print('>>>>>>>>>>>>>>>>>')
+        while True:
+            data = await self._cache.check_status()
+            await self.send(text_data=json.dumps(
+                    # action must included
+                    {'action': 'check_others_status',
+                    'result': data
+                    },
+                    cls=DjangoJSONEncoder
+                ))
+            await asyncio.sleep(0.5)
+
+    async def _run(self, current_role=None):
+        while True:
+            user_id_list = await self.online_users()
+            await self._update_cache(user_id_list)
+            # user
+            user_id = self.scope['user'].id 
+            self._event.set()
+            await asyncio.sleep(self.cache_interval)
 
     async def disconnect(self, close_code):
         # Leave room group
@@ -60,7 +108,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def get_user(self, *, username=None):
         return User.objects.get(username=username)
 
-    
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
